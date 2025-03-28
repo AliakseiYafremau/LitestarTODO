@@ -1,0 +1,13 @@
+[project]
+name = "litestar-template"
+version = "0.1.0"
+description = "Litestar template"
+readme = "README.md"
+authors = [
+    { name = "Aliaksei Yafremau", email = "aleksey.yafremau@gmail.com" }
+]
+dependencies = []
+
+[project.scripts]
+litestar-template = "litestar_template:main"
+

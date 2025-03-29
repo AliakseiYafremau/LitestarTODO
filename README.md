@@ -11,5 +11,5 @@ pip install -e .
 2. Запустите приложение
 
 ```
-uvicorn litestar_template.main.start:app
+start_app
 ```

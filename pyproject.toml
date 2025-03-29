@@ -10,7 +10,7 @@ name = "litestar-template"
 version = "0.1.0"
 description = "Litestar template"
 readme = "README.md"
-license = "MIT"
+license = {file = "LICENSE"}
 authors = [
     { name = "Aliaksei Yafremau", email = "aleksey.yafremau@gmail.com" }
 ]
@@ -20,12 +20,12 @@ dependencies = [
     "uvicorn>=0.34.0",
 ]
 
-[dependency-groups]
+[project.scripts]
+start_app = "litestar_template.main.cli:start"
+
+[project.optional-dependencies]
 dev = [
     "pytest>=8.3.5",
     "ruff>=0.11.2",
     "tox>=4.25.0",
 ]
-
-[project.scripts]
-start_app = "litestar_template.main.cli:start"

@@ -12,3 +12,4 @@ venv/
 
 .ruff_cache/
 .tox/
+.pytest_cache/

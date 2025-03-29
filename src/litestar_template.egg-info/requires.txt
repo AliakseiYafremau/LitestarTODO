@@ -1,4 +1,0 @@
-litestar>=2.15.1
-uvicorn>=0.34.0
-
-[lint]

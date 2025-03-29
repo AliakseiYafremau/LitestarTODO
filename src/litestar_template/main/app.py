@@ -1,14 +1,17 @@
-from litestar import Litestar
+from litestar import Litestar, Router
+from litestar.plugins.sqlalchemy import SQLAlchemyPlugin
 
-
-from litestar_template.routers.base_router import hello_world
+from litestar_template.core.database import sqlalchemy_config
+from litestar_template.todo.controllers import ListController
 
 
 def create_app():
     app = Litestar(
         route_handlers=[
-            hello_world,
+            Router(path="", route_handlers=[ListController])
         ],
+        debug=True,
+        plugins=[SQLAlchemyPlugin(config=sqlalchemy_config)],
     )
     return app
 

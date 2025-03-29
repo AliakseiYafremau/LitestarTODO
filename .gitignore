@@ -14,3 +14,4 @@ venv/
 .tox/
 .pytest_cache/
 *.log
+*.sqlite

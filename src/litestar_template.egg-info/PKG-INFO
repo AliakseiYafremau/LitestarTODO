@@ -1,0 +1,28 @@
+Metadata-Version: 2.4
+Name: litestar-template
+Version: 0.1.0
+Summary: Litestar template
+Author-email: Aliaksei Yafremau <aleksey.yafremau@gmail.com>
+License-Expression: MIT
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: litestar>=2.15.1
+Requires-Dist: uvicorn>=0.34.0
+Provides-Extra: lint
+Dynamic: license-file
+
+# Шаблон для Litestar приложения
+
+## Запуск
+
+1. Скачайте зависимости
+
+```
+pip install -e .
+```
+
+2. Запустите приложение
+
+```
+uvicorn litestar_template.main.start:app
+```

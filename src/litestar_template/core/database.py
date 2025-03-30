@@ -1,5 +1,3 @@
-from typing import AsyncGenerator
-
 from litestar.plugins.sqlalchemy import (
     AsyncSessionConfig,
     SQLAlchemyAsyncConfig,

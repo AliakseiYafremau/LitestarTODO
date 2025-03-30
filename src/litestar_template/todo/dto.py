@@ -5,8 +5,12 @@ from uuid import UUID
 from litestar.dto import MsgspecDTO, DTOConfig
 
 
-class List(msgspec.Struct):
+class ListScheme(msgspec.Struct):
     id: UUID
+    title: str
+
+
+class ListCreateScheme(msgspec.Struct):
     title: str
 
 
@@ -16,9 +20,5 @@ class Note(msgspec.Struct):
     list_id: UUID
 
 
-class ListReadDTO(MsgspecDTO[List]):
-    config = DTOConfig()
-
-
-class NoteReadDTO(MsgspecDTO[Note]):
+class ListReadDTO(MsgspecDTO[ListScheme]):
     config = DTOConfig()

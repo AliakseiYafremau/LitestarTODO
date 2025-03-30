@@ -8,11 +8,13 @@ from litestar_template.todo.controllers import ListController
 
 def create_app():
     app = Litestar(
-        route_handlers=[
-            Router(path="", route_handlers=[ListController])
-        ],
+        route_handlers=[Router(path="", route_handlers=[ListController])],
         debug=True,
-        dependencies={"db_session": Provide(sqlalchemy_config.provide_session, sync_to_thread=True)},
+        dependencies={
+            "db_session": Provide(
+                sqlalchemy_config.provide_session, sync_to_thread=True
+            )
+        },
         plugins=[SQLAlchemyPlugin(config=sqlalchemy_config)],
     )
     return app

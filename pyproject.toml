@@ -25,7 +25,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "flake8>=7.1.2",
     "pytest>=8.3.5",
     "pytest-asyncio>=0.26.0",
     "ruff>=0.11.2",
@@ -34,6 +33,10 @@ dev = [
 
 [project.scripts]
 run = "litestar_template.main.cli:start"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D100", "D104", "D203", "D213", "COM812", "S101"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

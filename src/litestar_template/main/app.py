@@ -1,15 +1,16 @@
 from litestar import Litestar, Router
 from litestar.di import Provide
-from litestar.plugins.sqlalchemy import SQLAlchemyPlugin
 from litestar.openapi.config import OpenAPIConfig
 from litestar.openapi.plugins import SwaggerRenderPlugin
+from litestar.plugins.sqlalchemy import SQLAlchemyPlugin
 
 from litestar_template.core.database import sqlalchemy_config
 from litestar_template.todo.controllers import ListController
 
 
-def create_app():
-    app = Litestar(
+def create_app() -> Litestar:
+    """Create the Litestar application."""
+    return Litestar(
         route_handlers=[Router(path="", route_handlers=[ListController])],
         openapi_config=OpenAPIConfig(
             title="Litestar Template",
@@ -26,7 +27,6 @@ def create_app():
         },
         plugins=[SQLAlchemyPlugin(config=sqlalchemy_config)],
     )
-    return app
 
 
 app = create_app()

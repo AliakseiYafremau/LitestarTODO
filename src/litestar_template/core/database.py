@@ -3,7 +3,6 @@ from litestar.plugins.sqlalchemy import (
     SQLAlchemyAsyncConfig,
 )
 
-
 session_config = AsyncSessionConfig(expire_on_commit=False)
 sqlalchemy_config = SQLAlchemyAsyncConfig(
     connection_string="sqlite+aiosqlite:///test.sqlite",

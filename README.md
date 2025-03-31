@@ -11,5 +11,5 @@ pip install -e .
 2. Запустите приложение
 
 ```
-start_app
+run
 ```

@@ -3,4 +3,4 @@ import uvicorn
 
 def start() -> None:
     """Start the development server."""
-    uvicorn.run("litestar_template.main.app:app", reload=True)
+    uvicorn.run("litestar_todo.main.app:app", reload=True)

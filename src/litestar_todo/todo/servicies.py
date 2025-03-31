@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from litestar_template.todo.dto import ListReadDTO, ListScheme
-from litestar_template.todo.models import List
-from litestar_template.todo.repositories import ListRepository
+from litestar_todo.todo.dto import ListReadDTO, ListScheme
+from litestar_todo.todo.models import List
+from litestar_todo.todo.repositories import ListRepository
 
 if TYPE_CHECKING:
     from uuid import UUID

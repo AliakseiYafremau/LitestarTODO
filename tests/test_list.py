@@ -5,7 +5,7 @@ from litestar import Litestar
 from litestar.status_codes import HTTP_200_OK
 from litestar.testing import AsyncTestClient
 
-from litestar_template.main.app import app
+from litestar_todo.main.app import app
 
 app.debug = True
 

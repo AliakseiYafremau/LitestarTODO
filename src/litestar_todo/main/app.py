@@ -4,8 +4,8 @@ from litestar.openapi.config import OpenAPIConfig
 from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.plugins.sqlalchemy import SQLAlchemyPlugin
 
-from litestar_template.core.database import sqlalchemy_config
-from litestar_template.todo.controllers import ListController
+from litestar_todo.core.database import sqlalchemy_config
+from litestar_todo.todo.controllers import ListController
 
 
 def create_app() -> Litestar:
@@ -13,9 +13,9 @@ def create_app() -> Litestar:
     return Litestar(
         route_handlers=[Router(path="", route_handlers=[ListController])],
         openapi_config=OpenAPIConfig(
-            title="Litestar Template",
+            title="Litestar TODO",
             version="1.0.0",
-            description="Litestar Template",
+            description="Litestar TODO",
             path="/docs",
             render_plugins=[SwaggerRenderPlugin()],
         ),

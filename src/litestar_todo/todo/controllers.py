@@ -5,8 +5,8 @@ from litestar.controller import Controller
 from litestar.di import Provide
 from litestar.handlers.http_handlers.decorators import delete, get, post
 
-from litestar_template.todo.dto import ListCreateScheme, ListReadDTO
-from litestar_template.todo.servicies import ListService, provide_list_service
+from litestar_todo.todo.dto import ListCreateScheme, ListReadDTO
+from litestar_todo.todo.servicies import ListService, provide_list_service
 
 
 class ListController(Controller):

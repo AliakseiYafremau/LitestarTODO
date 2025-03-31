@@ -6,9 +6,9 @@ build-backend = "setuptools.build_meta"
 package-dir = { "" = "src" }
 
 [project]
-name = "litestar-template"
+name = "litestar_todo"
 version = "0.1.0"
-description = "Litestar template"
+description = "Litestar TODO app"
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
@@ -32,7 +32,7 @@ dev = [
 ]
 
 [project.scripts]
-run = "litestar_template.main.cli:start"
+run = "litestar_todo.main.cli:start"
 
 [tool.ruff.lint]
 select = ["ALL"]

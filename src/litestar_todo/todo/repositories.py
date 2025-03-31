@@ -1,7 +1,7 @@
 from litestar.contrib.sqlalchemy.repository import SQLAlchemyAsyncRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from litestar_template.todo.models import List, Note
+from litestar_todo.todo.models import List, Note
 
 
 class ListRepository(SQLAlchemyAsyncRepository[List]):

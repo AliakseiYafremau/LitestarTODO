@@ -18,14 +18,14 @@ class ListController(Controller):
     }
 
     @get()
-    async def list_list(
+    async def get_list(
         self, list_id: UUID, list_service: ListService
     ) -> list[ListReadDTO]:
         """Endpoint for retrieving a single todo list."""
         return await list_service.get_by_id(list_id=list_id)
 
     @get("/all")
-    async def list_lists(self, list_service: ListService) -> list[ListReadDTO]:
+    async def get_all(self, list_service: ListService) -> list[ListReadDTO]:
         """Endpoint for retrieving all todo lists."""
         return await list_service.get_all()
 

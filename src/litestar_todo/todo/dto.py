@@ -18,7 +18,7 @@ class ListScheme(msgspec.Struct):
 
 
 class ListCreateScheme(msgspec.Struct):
-    """ListCreateScheme class.
+    """Scheme for creating a new list.
 
     Attributes:
         title (str): The title of the list.
@@ -28,7 +28,7 @@ class ListCreateScheme(msgspec.Struct):
     title: str
 
 
-class Note(msgspec.Struct):
+class NoteScheme(msgspec.Struct):
     """Note class.
 
     Attributes:
@@ -43,12 +43,38 @@ class Note(msgspec.Struct):
     list_id: UUID
 
 
+class NoteCreateScheme(msgspec.Struct):
+    """Scheme for creating a new note.
+
+    Attributes:
+        text (str): The text of the note.
+        list_id (UUID): The ID of the list to which the note belongs.
+
+    """
+
+    text: str
+    list_id: UUID
+
+
 class ListReadDTO(MsgspecDTO[ListScheme]):
     """ListReadDTO class.
 
     Attributes:
         id (UUID): The ID of the list.
         title (str): The title of the list.
+
+    """
+
+    config = DTOConfig()
+
+
+class NoteReadDTO(MsgspecDTO[NoteScheme]):
+    """NoteReadDTO class.
+
+    Attributes:
+        id (UUID): The ID of the note.
+        text (str): The text of the note.
+        list_id (UUID): The ID of the list to which the note belongs.
 
     """
 

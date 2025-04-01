@@ -1,15 +1,24 @@
-# Шаблон для Litestar приложения
+# TODO app using Litestar
 
-## Запуск
+A simple TODO application built with Litestar web framework.
 
-1. Скачайте зависимости
+## Running
+
+1. Install dependencies
 
 ```
 pip install -e .
 ```
 
-2. Запустите приложение
+2. Run the app
 
 ```
 run
+```
+
+## Testing
+
+Running tests
+```
+tox
 ```

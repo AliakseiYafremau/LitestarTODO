@@ -5,13 +5,15 @@ from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.plugins.sqlalchemy import SQLAlchemyPlugin
 
 from litestar_todo.core.database import sqlalchemy_config
-from litestar_todo.todo.controllers import ListController
+from litestar_todo.todo.controllers import ListController, NoteController
 
 
 def create_app() -> Litestar:
     """Create the Litestar application."""
     return Litestar(
-        route_handlers=[Router(path="", route_handlers=[ListController])],
+        route_handlers=[
+            Router(path="", route_handlers=[ListController, NoteController])
+        ],
         openapi_config=OpenAPIConfig(
             title="Litestar TODO",
             version="1.0.0",

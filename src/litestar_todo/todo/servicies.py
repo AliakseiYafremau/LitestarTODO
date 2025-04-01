@@ -37,8 +37,8 @@ class ListService:
             ListReadDTO if the list exists, None otherwise.
 
         """
-        exist = await self.list_repo.exists(id=list_id)
-        if not exist:
+        does_list_exist = await self.list_repo.exists(id=list_id)
+        if not does_list_exist:
             return None
         db_list = await self.list_repo.get(item_id=list_id)
         return ListScheme(id=db_list.id, title=db_list.title)
@@ -91,14 +91,16 @@ class NoteService:
     Provides CRUD operations for todo notes using NoteRepository.
     """
 
-    def __init__(self, note_repo: NoteRepository) -> None:
+    def __init__(self, note_repo: NoteRepository, list_repo: ListRepository) -> None:
         """Initialize the NoteService with a NoteRepository instance.
 
         Args:
             note_repo: The repository instance for database operations.
+            list_repo: The repository instance for database operations.
 
         """
         self.note_repo = note_repo
+        self.list_repo = list_repo
 
     async def get_by_id(self, note_id: UUID) -> NoteReadDTO | None:
         """Retrieve a single todo note by its ID.
@@ -132,7 +134,7 @@ class NoteService:
             ]
         return []
 
-    async def create(self, text: str, list_id: UUID) -> NoteReadDTO:
+    async def create(self, text: str, list_id: UUID) -> NoteReadDTO | None:
         """Create a new todo note.
 
         Args:
@@ -143,6 +145,9 @@ class NoteService:
             NoteReadDTO representing the newly created note.
 
         """
+        does_list_exist = await self.list_repo.exists(id=list_id)
+        if not does_list_exist:
+            return None
         db_note = await self.note_repo.add(
             data=Note(text=text, list_id=list_id), auto_commit=True
         )
@@ -185,4 +190,6 @@ async def provide_note_service(db_session: AsyncSession) -> NoteService:
         An instance of NoteService configured with a NoteRepository.
 
     """
-    return NoteService(NoteRepository(session=db_session))
+    return NoteService(
+        NoteRepository(session=db_session), ListRepository(session=db_session)
+    )

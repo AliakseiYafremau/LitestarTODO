@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from litestar_todo.todo.dto import ListReadDTO, ListScheme, NoteReadDTO, NoteScheme
+from litestar_todo.todo.dto import (
+    ListScheme,
+    NoteScheme,
+)
 from litestar_todo.todo.models import List, Note
 from litestar_todo.todo.repositories import ListRepository, NoteRepository
 
@@ -27,14 +30,14 @@ class ListService:
         """
         self.list_repo = list_repo
 
-    async def get_by_id(self, list_id: UUID) -> ListReadDTO | None:
+    async def get_by_id(self, list_id: UUID) -> ListScheme | None:
         """Retrieve a single todo list by its ID.
 
         Args:
             list_id: The UUID of the list to retrieve.
 
         Returns:
-            ListReadDTO if the list exists, None otherwise.
+            ListScheme if the list exists, None otherwise.
 
         """
         does_list_exist = await self.list_repo.exists(id=list_id)
@@ -43,11 +46,11 @@ class ListService:
         db_list = await self.list_repo.get(item_id=list_id)
         return ListScheme(id=db_list.id, title=db_list.title)
 
-    async def get_all(self) -> list[ListReadDTO]:
+    async def get_all(self) -> list[ListScheme]:
         """Retrieve all todo lists.
 
         Returns:
-            A list of ListReadDTO objects representing all todo lists.
+            A list of ListScheme objects representing all todo lists.
             Returns empty list if no lists exist.
 
         """
@@ -58,27 +61,27 @@ class ListService:
             ]
         return []
 
-    async def create(self, title: str) -> ListReadDTO:
+    async def create(self, title: str) -> ListScheme:
         """Create a new todo list.
 
         Args:
             title: The title of the new list.
 
         Returns:
-            ListReadDTO representing the newly created list.
+            ListScheme representing the newly created list.
 
         """
         db_list = await self.list_repo.add(data=List(title=title), auto_commit=True)
         return ListScheme(id=db_list.id, title=db_list.title)
 
-    async def delete(self, list_id: UUID) -> ListReadDTO:
+    async def delete(self, list_id: UUID) -> ListScheme:
         """Delete a todo list.
 
         Args:
             list_id: The UUID of the list to delete.
 
         Returns:
-            ListReadDTO representing the deleted list.
+            ListScheme representing the deleted list.
 
         """
         db_list = await self.list_repo.delete(item_id=list_id, auto_commit=True)
@@ -102,7 +105,7 @@ class NoteService:
         self.note_repo = note_repo
         self.list_repo = list_repo
 
-    async def get_by_id(self, note_id: UUID) -> NoteReadDTO | None:
+    async def get_by_id(self, note_id: UUID) -> NoteScheme | None:
         """Retrieve a single todo note by its ID.
 
         Args:
@@ -118,7 +121,7 @@ class NoteService:
         db_note = await self.note_repo.get(item_id=note_id)
         return NoteScheme(id=db_note.id, text=db_note.text, list_id=db_note.list_id)
 
-    async def get_all(self) -> list[NoteReadDTO]:
+    async def get_all(self) -> list[NoteScheme]:
         """Retrieve all todo notes.
 
         Returns:
@@ -134,7 +137,7 @@ class NoteService:
             ]
         return []
 
-    async def create(self, text: str, list_id: UUID) -> NoteReadDTO | None:
+    async def create(self, text: str, list_id: UUID) -> NoteScheme | None:
         """Create a new todo note.
 
         Args:
@@ -153,7 +156,7 @@ class NoteService:
         )
         return NoteScheme(id=db_note.id, text=db_note.text, list_id=db_note.list_id)
 
-    async def delete(self, note_id: UUID) -> NoteReadDTO:
+    async def delete(self, note_id: UUID) -> NoteScheme:
         """Delete a todo note.
 
         Args:

@@ -1,5 +1,6 @@
 # Cache and Packaging
 __pycache__/
+.mypy_cache/
 .ruff_cache/
 .tox/
 .pytest_cache/

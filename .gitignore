@@ -1,17 +1,24 @@
+# Cache and Packaging
 __pycache__/
-build/
-*.egg-info/
-*.egg
-
-uv.lock
-
-.env
-.venv
-env/
-venv/
-
 .ruff_cache/
 .tox/
 .pytest_cache/
+*.egg-info/
+*.egg
+build/
+
+
+# Virtualenv
+venv/
+.venv/
+uv.lock
+
+
+# Environment
+.env
+env/
+
+
+# Misc
 *.log
 *.sqlite

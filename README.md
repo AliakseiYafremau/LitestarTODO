@@ -2,12 +2,19 @@
 
 A simple TODO application built with Litestar web framework.
 
-## Running
-
-1. Install dependencies
+## Requirements
 
 ```
-pip install -e .
+python>=3.10
+uv
+```
+
+## Running
+
+1. Install dependencies and ***activate virtual environment, depending on your OS***
+
+```
+uv sync
 ```
 
 2. Run the app

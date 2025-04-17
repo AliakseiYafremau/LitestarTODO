@@ -5,14 +5,14 @@ from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.plugins.sqlalchemy import SQLAlchemyPlugin
 
 from litestar_todo.core.database import sqlalchemy_config
-from litestar_todo.todo.controllers import ListController, NoteController
+from litestar_todo.todo.controllers import NoteController
 
 
 def create_app() -> Litestar:
     """Create the Litestar application."""
     return Litestar(
         route_handlers=[
-            Router(path="", route_handlers=[ListController, NoteController])
+            Router(path="", route_handlers=[NoteController]),
         ],
         openapi_config=OpenAPIConfig(
             title="Litestar TODO",
@@ -24,7 +24,7 @@ def create_app() -> Litestar:
         debug=True,
         dependencies={
             "db_session": Provide(
-                sqlalchemy_config.provide_session, sync_to_thread=True
+                sqlalchemy_config.provide_session, sync_to_thread=True,
             )
         },
         plugins=[SQLAlchemyPlugin(config=sqlalchemy_config)],

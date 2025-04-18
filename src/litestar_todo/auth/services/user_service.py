@@ -70,7 +70,8 @@ class UserService:
                 UserReadScheme(
                     id=element.id,
                     username=element.username,
-                ) for element in all_users
+                )
+                for element in all_users
             ]
         return []
 

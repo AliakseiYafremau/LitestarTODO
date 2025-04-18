@@ -14,4 +14,5 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = "your_jwt_secret_key"
     JWT_ALGORITHM: str = "HS256"
 
+
 settings = Settings()

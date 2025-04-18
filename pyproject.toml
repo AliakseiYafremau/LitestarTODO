@@ -40,7 +40,7 @@ run = "litestar_todo.main.cli:start"
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D100", "D104", "D203", "D213", "COM812", "S101"]
+ignore = ["D100", "D104", "D203", "D213", "COM812", "S101", "S106", "S105"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

@@ -42,3 +42,16 @@ class UserReadScheme(msgspec.Struct):
 
     id: UUID
     username: str
+
+
+class TokenScheme(msgspec.Struct):
+    """TokenScheme class.
+
+    Attributes:
+        access_token (str): The access token for the user.
+        token_type (str): The type of the token.
+
+    """
+
+    access_token: str
+    token_type: str

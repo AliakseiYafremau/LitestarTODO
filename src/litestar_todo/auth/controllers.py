@@ -10,7 +10,10 @@ from litestar_todo.auth.dto import (
     TokenScheme,
     UserCreateScheme,
 )
-from litestar_todo.auth.services.auth_service import AuthService, provide_auth_service
+from litestar_todo.auth.services.auth_service import (
+    AuthService,
+    provide_auth_service,
+)
 from litestar_todo.main.config import settings
 
 
@@ -23,7 +26,7 @@ class AuthController(Controller):
         self.path = "/auth"
         self.dependencies = {"auth_service": Provide(provide_auth_service)}
 
-    @post()
+    @post("/login")
     async def authenticate(
         self,
         data: UserCreateScheme,
@@ -42,3 +45,25 @@ class AuthController(Controller):
             algorithm=settings.JWT_ALGORITHM,
         )
         return TokenScheme(access_token=token, token_type="bearer")
+
+    @post("/register")
+    async def register(
+        self,
+        data: UserCreateScheme,
+        auth_service: AuthService,
+    ) -> TokenScheme | Response:
+        """Endpoint for registering a new user."""
+        result = await auth_service.register(data=data)
+        if result is None:
+            return Response(
+                content={"message": "User already exists"},
+                status_code=HTTP_400_BAD_REQUEST,
+            )
+        token = await auth_service.generate_token(
+            user_id=result.id,
+            secret=settings.JWT_SECRET_KEY,
+            algorithm=settings.JWT_ALGORITHM,
+        )
+        return TokenScheme(access_token=token, token_type="bearer")
+
+

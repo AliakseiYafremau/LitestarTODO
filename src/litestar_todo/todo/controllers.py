@@ -9,6 +9,7 @@ from litestar.di import Provide
 from litestar.handlers.http_handlers.decorators import delete, get, post
 from litestar.status_codes import HTTP_400_BAD_REQUEST
 
+from litestar_todo.auth.services.auth_service import login_required
 from litestar_todo.todo.dto import (
     NoteReadScheme,
 )
@@ -49,6 +50,7 @@ class NoteController(Controller):
             )
         return result
 
+    @login_required
     @get("/all")
     async def get_all(self, note_service: NoteService) -> list[NoteReadScheme]:
         """Endpoint for retrieving all todo notes."""

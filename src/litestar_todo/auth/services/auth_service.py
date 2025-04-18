@@ -1,15 +1,24 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from functools import wraps
+from typing import TYPE_CHECKING, Callable
 
 import jwt
+from litestar.response import (
+    Response,  # Adjust the import path based on your project structure
+)
+from litestar.status_codes import HTTP_400_BAD_REQUEST
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from litestar_todo.auth.dto import UserCreateScheme, UserReadScheme, UserScheme
+from litestar_todo.auth.models import User
+from litestar_todo.auth.repositories import UserRepository
 
 if TYPE_CHECKING:
     from uuid import UUID
 
-    from litestar_todo.auth.repositories import UserRepository
+    from litestar import Request
+    from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class AuthService:
@@ -41,7 +50,7 @@ class AuthService:
 
         """
         user = await self.get_user(username=data.username)
-        if not user or not self.verify_password(data.password, user.password):
+        if not user or not await self.verify_password(data.password, user.password):
             return None  # Должно вызывать исключение
         return UserReadScheme(id=user.id, username=user.username)  # Тут тоже
 
@@ -77,7 +86,7 @@ class AuthService:
             A token string for the authenticated user.
 
         """
-        payload = {"user_id": user_id}
+        payload = {"user_id": str(user_id)}
         return jwt.encode(payload, secret, algorithm=algorithm)
 
     async def hash_password(self, password: str) -> str:
@@ -105,15 +114,102 @@ class AuthService:
         """
         return plain_password == hashed_password  # Just to give an example
 
+    async def register(self, data: UserCreateScheme) -> UserReadScheme:
+        """Register a new user.
 
-def provide_auth_service(user_repository: UserRepository) -> AuthService:
+        Args:
+            data: UserCreateScheme containing username and password.
+
+        Returns:
+            UserReadScheme for the newly created user.
+
+        Raises:
+            ValueError: If the username is already taken.
+
+        """
+        exist = await self.user_repository.exists(username=data.username)
+        if exist:
+            raise ValueError("Username is already taken.")
+
+        hashed_password = await self.hash_password(data.password)
+        new_user = await self.user_repository.add(
+            data=User(
+                username=data.username,
+                password=hashed_password,
+            ),
+            auto_commit=True,
+        )
+        return UserReadScheme(id=new_user.id, username=new_user.username)
+
+    async def verify_token(self, token: str, secret: str, algorithm: str) -> UserReadScheme | None:
+        """Verify the validity of a token and return the associated user.
+
+        Args:
+            token: The token to verify.
+            secret: The secret key used for token verification.
+            algorithm: The algorithm used for token verification.
+
+        Returns:
+            UserReadScheme if the token is valid, None otherwise.
+
+        """
+        try:
+            payload = jwt.decode(token, secret, algorithms=[algorithm])
+            user_id = payload.get("user_id")
+            if not user_id:
+                return None
+
+            user = await self.user_repository.get(item_id=user_id)
+            if not user:
+                return None
+
+            return UserReadScheme(id=user.id, username=user.username)
+        except jwt.ExpiredSignatureError:
+            return None
+        except jwt.InvalidTokenError:
+            return None
+
+
+async def provide_auth_service(db_session: AsyncSession) -> AuthService:
     """Provide an instance of AuthService.
 
     Args:
-        user_repository: Repository for user-related operations.
+        db_session: Database session for user-related operations.
 
     Returns:
         An instance of AuthService.
 
     """
-    return AuthService(user_repository=user_repository)
+    return AuthService(UserRepository(session=db_session))
+
+
+def login_required(func: Callable) -> Callable:
+    """Check if the user is logged in."""
+
+    @wraps(func)
+    async def wrapper(self, *args, **kwargs) -> Response:
+        request: Request = kwargs.get("request")
+        if not request:
+            return Response(
+                content={"message": "Request object is required"},
+                status_code=HTTP_400_BAD_REQUEST,
+            )
+
+        token = request.headers.get("Authorization")
+        if not token:
+            return Response(
+                content={"message": "Token is required"},
+                status_code=HTTP_400_BAD_REQUEST,
+            )
+
+        auth_service: AuthService = request.app.dependencies["auth_service"]
+        user = await auth_service.verify_token(token)
+        if not user:
+            return Response(
+                content={"message": "Invalid token"},
+                status_code=HTTP_400_BAD_REQUEST,
+            )
+
+        return await func(self, *args, **kwargs)
+
+    return wrapper

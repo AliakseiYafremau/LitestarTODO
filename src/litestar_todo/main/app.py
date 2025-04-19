@@ -3,10 +3,13 @@ from litestar.di import Provide
 from litestar.openapi.config import OpenAPIConfig
 from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.plugins.sqlalchemy import SQLAlchemyPlugin
+from litestar.middleware.base import DefineMiddleware
 
+from litestar_todo.auth.utils import jwt_auth
 from litestar_todo.auth.controllers import AuthController
 from litestar_todo.core.database import sqlalchemy_config
 from litestar_todo.todo.controllers import NoteController
+from litestar_todo.auth.middlewares import JWTAuthenticationMiddleware
 
 
 def create_app() -> Litestar:
@@ -15,6 +18,7 @@ def create_app() -> Litestar:
         route_handlers=[
             Router(path="", route_handlers=[NoteController, AuthController]),
         ],
+        on_app_init=[jwt_auth.on_app_init],
         openapi_config=OpenAPIConfig(
             title="Litestar TODO",
             version="1.0.0",

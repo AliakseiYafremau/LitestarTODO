@@ -181,35 +181,3 @@ async def provide_auth_service(db_session: AsyncSession) -> AuthService:
 
     """
     return AuthService(UserRepository(session=db_session))
-
-
-def login_required(func: Callable) -> Callable:
-    """Check if the user is logged in."""
-
-    @wraps(func)
-    async def wrapper(self, *args, **kwargs) -> Response:
-        request: Request = kwargs.get("request")
-        if not request:
-            return Response(
-                content={"message": "Request object is required"},
-                status_code=HTTP_400_BAD_REQUEST,
-            )
-
-        token = request.headers.get("Authorization")
-        if not token:
-            return Response(
-                content={"message": "Token is required"},
-                status_code=HTTP_400_BAD_REQUEST,
-            )
-
-        auth_service: AuthService = request.app.dependencies["auth_service"]
-        user = await auth_service.verify_token(token)
-        if not user:
-            return Response(
-                content={"message": "Invalid token"},
-                status_code=HTTP_400_BAD_REQUEST,
-            )
-
-        return await func(self, *args, **kwargs)
-
-    return wrapper

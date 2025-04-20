@@ -1,20 +1,23 @@
 from __future__ import annotations
 
-from litestar import Response, Router
+from typing import TYPE_CHECKING
+
+from litestar import Response
 from litestar.controller import Controller
 from litestar.di import Provide
 from litestar.handlers.http_handlers.decorators import post
 from litestar.status_codes import HTTP_400_BAD_REQUEST
 
-from litestar_todo.auth.dto import (
-    TokenScheme,
-    UserCreateScheme,
-)
-from litestar_todo.auth.services.auth_service import (
-    AuthService,
-    provide_auth_service,
-)
-from litestar_todo.main.config import settings
+from litestar_todo.auth.dto import UserCreateScheme
+from litestar_todo.auth.services import AuthService, provide_auth_service
+from litestar_todo.auth.utils import jwt_auth
+
+if TYPE_CHECKING:
+    from litestar import Router
+
+    from litestar_todo.auth.dto import (
+        UserCreateScheme,
+    )
 
 
 class AuthController(Controller):
@@ -27,43 +30,25 @@ class AuthController(Controller):
         self.dependencies = {"auth_service": Provide(provide_auth_service)}
 
     @post("/login")
-    async def authenticate(
-        self,
-        data: UserCreateScheme,
-        auth_service: AuthService,
-    ) -> TokenScheme | Response:
-        """Endpoint for authenticating a user."""
-        result = await auth_service.authenticate(data=data)
-        if result is None:
+    async def login_handler(
+        self, auth_service: AuthService, data: UserCreateScheme,
+    ) -> Response:
+        """Login handler for user authentication.
+
+        Args:
+            auth_service: The authentication service used for user operations.
+            data: The user credentials.
+
+        Returns:
+            A response containing the authenticated user.
+
+        """
+        user = await auth_service.get_user_by_username(
+            username=data.username,
+        )
+        if not user:
             return Response(
-                content={"message": "Invalid credentials"},
+                content={"message": "Invalid input"},
                 status_code=HTTP_400_BAD_REQUEST,
             )
-        token = await auth_service.generate_token(
-            user_id=result.id,
-            secret=settings.JWT_SECRET_KEY,
-            algorithm=settings.JWT_ALGORITHM,
-        )
-        return TokenScheme(access_token=token, token_type="bearer")
-
-    @post("/register")
-    async def register(
-        self,
-        data: UserCreateScheme,
-        auth_service: AuthService,
-    ) -> TokenScheme | Response:
-        """Endpoint for registering a new user."""
-        result = await auth_service.register(data=data)
-        if result is None:
-            return Response(
-                content={"message": "User already exists"},
-                status_code=HTTP_400_BAD_REQUEST,
-            )
-        token = await auth_service.generate_token(
-            user_id=result.id,
-            secret=settings.JWT_SECRET_KEY,
-            algorithm=settings.JWT_ALGORITHM,
-        )
-        return TokenScheme(access_token=token, token_type="bearer")
-
-
+        return jwt_auth.login(identifier=str(user.id))

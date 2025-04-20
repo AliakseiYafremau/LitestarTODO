@@ -9,15 +9,3 @@ class UserRepository(SQLAlchemyAsyncRepository[User]):
 
     model_type = User
 
-
-async def provide_user_repo(db_session: AsyncSession) -> UserRepository:
-    """Dependency provider for UserRepository.
-
-    Args:
-        db_session: AsyncSession for database operations.
-
-    Returns:
-        An instance of UserRepository configured with a User model.
-
-    """
-    return UserRepository(session=db_session)

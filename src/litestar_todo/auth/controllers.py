@@ -31,7 +31,9 @@ class AuthController(Controller):
 
     @post("/login")
     async def login_handler(
-        self, auth_service: AuthService, data: UserCreateScheme,
+        self,
+        auth_service: AuthService,
+        data: UserCreateScheme,
     ) -> Response:
         """Login handler for user authentication.
 
@@ -51,4 +53,26 @@ class AuthController(Controller):
                 content={"message": "Invalid input"},
                 status_code=HTTP_400_BAD_REQUEST,
             )
+        return jwt_auth.login(identifier=str(user.id))
+
+    @post("/register")
+    async def register(
+        self,
+        auth_service: AuthService,
+        data: UserCreateScheme,
+    ) -> Response:
+        """Register handler for user registration.
+
+        Args:
+            auth_service: The authentication service used for user operations.
+            data: The user credentials.
+
+        Returns:
+            A response containing the registered user.
+
+        """
+        user = await auth_service.create_user(
+            username=data.username,
+            password=data.password,
+        )
         return jwt_auth.login(identifier=str(user.id))

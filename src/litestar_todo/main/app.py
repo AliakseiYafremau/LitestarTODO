@@ -20,7 +20,7 @@ def create_app() -> Litestar:
         openapi_config=OpenAPIConfig(
             title="Litestar TODO",
             version="1.0.0",
-            description="Litestar TODO",
+            description="Simple TODO",
             path="/docs",
             render_plugins=[SwaggerRenderPlugin()],
         ),

@@ -15,7 +15,8 @@ if TYPE_CHECKING:
 
 
 async def retrieve_user_handler(
-    token: Token, connection: ASGIConnection[Any, Any, Any, Any],
+    token: Token,
+    connection: ASGIConnection[Any, Any, Any, Any],
 ) -> User | None:
     """Retrieve a user instance based on the provided JWT token.
 
@@ -33,7 +34,8 @@ async def retrieve_user_handler(
 
     """
     session = sqlalchemy_config.provide_session(
-        connection.app.state, connection.scope,
+        connection.app.state,
+        connection.scope,
     )
     service = await provide_auth_service(session)
     user = await service.get_user(user_id=UUID(token.sub))
@@ -43,5 +45,5 @@ async def retrieve_user_handler(
 jwt_auth = JWTAuth[User](
     retrieve_user_handler=retrieve_user_handler,
     token_secret=settings.JWT_SECRET_KEY,
-    exclude=["/login", "/docs"],
+    exclude=["/login", "/register", "/docs"],
 )

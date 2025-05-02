@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from litestar_todo.auth.dto import UserCreateScheme, UserReadScheme
 from litestar_todo.auth.models import User
 from litestar_todo.auth.repositories import UserRepository
 
@@ -43,6 +42,21 @@ class AuthService:
             return await self.user_repository.get_one(id=user_id)
         return None
 
+    async def create_user(self, username: str, password: str) -> User:
+        """Create a new user.
+
+        Args:
+            username: The username of the user to create.
+            password: The password of the user to create.
+
+        Returns:
+            The created User instance.
+
+        """
+        user = User(username=username, password=password)
+        await self.user_repository.add(user, auto_commit=True)
+        return user
+
     async def get_user_by_username(self, username: str) -> User | None:
         """Retrieve a user by their username.
 
@@ -58,25 +72,6 @@ class AuthService:
             return await self.user_repository.get_one(username=username)
         return None
 
-    async def create_user(self, user_data: UserCreateScheme) -> UserReadScheme:
-        """Create a new user.
-
-        Args:
-            user_data: The data for the new user.
-
-        Returns:
-            The created User instance.
-
-        """
-        user = await self.user_repository.add(
-            data=User(
-                username=user_data.username,
-                password=user_data.password),
-            )
-        return UserReadScheme(
-            id=user.id,
-            username=user.username,
-        )
 
 async def provide_auth_service(db_session: AsyncSession) -> AuthService:
     """Provide an instance of AuthService.

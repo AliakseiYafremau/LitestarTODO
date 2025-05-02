@@ -7,4 +7,3 @@ class NoteRepository(SQLAlchemyAsyncRepository[Note]):
     """Repository for Note model."""
 
     model_type = Note
-

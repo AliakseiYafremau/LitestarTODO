@@ -11,6 +11,7 @@ from litestar_todo.todo.repositories import NoteRepository
 if TYPE_CHECKING:
     from uuid import UUID
 
+    from litestar.contrib.sqlalchemy.repository import SQLAlchemyAsyncRepository
     from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -20,7 +21,7 @@ class NoteService:
     Provides CRUD operations for todo notes using NoteRepository.
     """
 
-    def __init__(self, note_repo: NoteRepository) -> None:
+    def __init__(self, note_repo: SQLAlchemyAsyncRepository) -> None:
         """Initialize the NoteService with a NoteRepository instance.
 
         Args:

@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from litestar_todo.auth.models import User
-from litestar_todo.auth.repositories import UserRepository
 
 if TYPE_CHECKING:
     from uuid import UUID
 
+    from litestar.contrib.sqlalchemy.repository import SQLAlchemyAsyncRepository
     from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -18,11 +18,12 @@ class AuthService:
     by interacting with the UserRepository.
     """
 
-    def __init__(self, user_repository: UserRepository) -> None:
+    def __init__(self, user_repository: SQLAlchemyAsyncRepository) -> None:
         """Initialize the AuthService with a UserRepository.
 
         Args:
-            user_repository: An instance of UserRepository to interact with user data.
+            user_repository: An instance of SQLAlchemyAsyncRepository 
+                to interact with user data.
 
         """
         self.user_repository = user_repository
